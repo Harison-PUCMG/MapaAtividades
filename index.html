@@ -18,12 +18,6 @@
     --text: #eaeaea;
     --text-muted: #a0a0b8;
     --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
-    --postit-yellow: #ffe066;
-    --postit-green: #a8e6cf;
-    --postit-pink: #ffaaa5;
-    --postit-blue: #a0d2db;
-    --postit-orange: #ffcc80;
-    --postit-lilac: #d5aaff;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,7 +30,6 @@
     overflow-x: hidden;
   }
 
-  /* Subtle background pattern */
   body::before {
     content: '';
     position: fixed;
@@ -50,190 +43,111 @@
   }
 
   header {
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
     text-align: center;
-    padding: 2.5rem 1rem 1rem;
+    padding: 2rem 1rem 0.6rem;
   }
-
   header h1 {
     font-family: 'Playfair Display', serif;
     font-weight: 900;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    letter-spacing: -0.02em;
+    font-size: clamp(1.8rem, 5vw, 3rem);
     background: linear-gradient(135deg, var(--ensino-light), var(--pesquisa-light), var(--extensao-light));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   header p {
     color: var(--text-muted);
-    margin-top: 0.4rem;
-    font-size: 0.95rem;
+    margin-top: 0.3rem;
+    font-size: 0.88rem;
   }
 
-  /* ── Controls Panel ── */
-  .controls {
-    position: relative;
-    z-index: 1;
-    max-width: 720px;
-    margin: 1.5rem auto;
+  .main-layout {
+    position: relative; z-index: 1;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  /* ══════════════════════════════════════
+     STAGING AREA
+     ══════════════════════════════════════ */
+  .staging-section {
     background: var(--surface);
-    border-radius: 16px;
-    padding: 1.5rem 2rem;
+    border-radius: 18px;
     box-shadow: var(--card-shadow);
     border: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+  }
+  .staging-section.drag-over {
+    box-shadow: 0 0 0 3px rgba(74,144,217,0.35), var(--card-shadow);
   }
 
-  .controls h2 {
+  .staging-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 1rem 1.4rem;
+    background: linear-gradient(135deg, rgba(42,58,92,0.5), rgba(28,42,74,0.7));
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .staging-top h2 {
     font-family: 'Playfair Display', serif;
     font-size: 1.15rem;
-    margin-bottom: 1rem;
-    color: var(--text);
+    display: flex; align-items: center; gap: 0.5rem;
   }
-
-  .tab-row {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .tab-btn {
-    flex: 1;
-    padding: 0.55rem 0.8rem;
-    border: 2px solid rgba(255,255,255,0.1);
-    background: transparent;
-    color: var(--text-muted);
-    border-radius: 10px;
-    cursor: pointer;
+  .badge {
     font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    font-size: 0.85rem;
-    transition: all 0.25s;
+    font-size: 0.68rem; font-weight: 700;
+    background: rgba(255,255,255,0.1);
+    padding: 0.18rem 0.5rem;
+    border-radius: 20px;
+    color: var(--text-muted);
   }
-  .tab-btn.active, .tab-btn:hover {
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border-color: rgba(255,255,255,0.2);
+  .staging-btns {
+    display: flex; gap: 0.4rem; flex-wrap: wrap;
   }
 
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  /* Post-it creation */
-  .postit-form {
+  .creation-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.7rem;
     align-items: flex-end;
+    padding: 1.1rem 1.4rem;
+    background: rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
   }
 
   .field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
+    display: flex; flex-direction: column; gap: 0.22rem;
   }
-
   .field label {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    font-size: 0.7rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
   }
-
   .field input[type="text"], .field select {
-    padding: 0.55rem 0.75rem;
+    padding: 0.48rem 0.65rem;
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.12);
     background: rgba(0,0,0,0.3);
     color: #fff;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     outline: none;
     transition: border-color 0.2s;
   }
-  .field input:focus, .field select:focus {
-    border-color: var(--ensino-light);
-  }
+  .field input:focus, .field select:focus { border-color: var(--pesquisa-light); }
 
-  .char-count {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    text-align: right;
-    margin-top: 2px;
-  }
+  .char-count { font-size: 0.63rem; color: var(--text-muted); text-align: right; margin-top: 1px; }
   .char-count.warn { color: var(--ensino); }
 
-  .btn {
-    padding: 0.6rem 1.4rem;
-    border: none;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.25s;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--ensino), var(--extensao));
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(233,69,96,0.3);
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(233,69,96,0.45);
-  }
-
-  /* Image upload */
-  .img-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    align-items: flex-end;
-  }
-
-  .file-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1.1rem;
-    border-radius: 8px;
-    border: 2px dashed rgba(255,255,255,0.15);
-    background: rgba(0,0,0,0.2);
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-  }
-  .file-label:hover {
-    border-color: var(--pesquisa-light);
-    color: #fff;
-  }
-  .file-label input { display: none; }
-
-  .file-name {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    max-width: 140px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Color swatches */
-  .color-picker-row {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+  .color-picker-row { display: flex; gap: 5px; align-items: center; }
   .color-swatch {
-    width: 26px;
-    height: 26px;
+    width: 23px; height: 23px;
     border-radius: 50%;
     border: 2px solid transparent;
     cursor: pointer;
@@ -242,26 +156,91 @@
   .color-swatch:hover, .color-swatch.selected {
     transform: scale(1.2);
     border-color: #fff;
-    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+    box-shadow: 0 0 8px rgba(255,255,255,0.3);
   }
 
-  /* ── Tier Columns ── */
+  .file-label {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.48rem 0.85rem;
+    border-radius: 8px;
+    border: 2px dashed rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.2);
+    color: var(--text-muted);
+    cursor: pointer; font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .file-label:hover { border-color: var(--pesquisa-light); color: #fff; }
+  .file-label input { display: none; }
+  .file-name {
+    font-size: 0.7rem; color: var(--text-muted);
+    max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .divider {
+    width: 1px; height: 34px;
+    background: rgba(255,255,255,0.08);
+    align-self: center; margin: 0 0.2rem;
+  }
+
+  .btn {
+    padding: 0.48rem 1.1rem; border: none; border-radius: 9px;
+    font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.78rem;
+    cursor: pointer; transition: all 0.25s;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--ensino), var(--extensao));
+    color: #fff;
+    box-shadow: 0 3px 12px rgba(233,69,96,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(233,69,96,0.45); }
+
+  .btn-ghost {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.72rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .btn-danger { border-color: rgba(233,69,96,0.25); color: var(--ensino-light); }
+  .btn-danger:hover { background: rgba(233,69,96,0.12); }
+
+  .staging-body {
+    padding: 1rem 1.4rem 1.1rem;
+    display: flex; flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 0.7rem;
+    min-height: 100px;
+    transition: background 0.25s;
+  }
+  .staging-body.drag-over { background: rgba(74,144,217,0.05); }
+
+  .staging-body:empty::after {
+    content: '📋 Crie post-its e imagens acima — eles aparecerão aqui para uso em aula';
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; min-height: 70px;
+    color: rgba(255,255,255,0.13);
+    font-size: 0.82rem; font-style: italic;
+    border: 2px dashed rgba(255,255,255,0.06);
+    border-radius: 12px;
+    text-align: center; padding: 0.8rem;
+  }
+
+  /* ══════════════════════════════════════
+     TIER COLUMNS
+     ══════════════════════════════════════ */
   .tier-container {
-    position: relative;
-    z-index: 1;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
-    max-width: 1200px;
-    margin: 1.5rem auto 3rem;
-    padding: 0 1rem;
+    gap: 1rem;
   }
-
-  @media (max-width: 768px) {
-    .tier-container {
-      grid-template-columns: 1fr;
-      max-width: 480px;
-    }
+  @media (max-width: 820px) {
+    .tier-container { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    .creation-bar { flex-direction: column; align-items: stretch; }
+    .divider { display: none; }
   }
 
   .tier-column {
@@ -270,250 +249,139 @@
     overflow: hidden;
     box-shadow: var(--card-shadow);
     border: 1px solid rgba(255,255,255,0.05);
-    min-height: 420px;
-    display: flex;
-    flex-direction: column;
+    min-height: 340px;
+    display: flex; flex-direction: column;
     transition: box-shadow 0.3s;
   }
-
   .tier-column.drag-over {
     box-shadow: 0 0 0 3px rgba(255,255,255,0.25), var(--card-shadow);
   }
 
   .tier-header {
-    padding: 1.1rem 1.2rem;
+    padding: 0.95rem 1.1rem;
     text-align: center;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
-
   .tier-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.15;
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 8px,
-      rgba(255,255,255,0.05) 8px,
-      rgba(255,255,255,0.05) 16px
-    );
+    content: ''; position: absolute; inset: 0; opacity: 0.15;
+    background: repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(255,255,255,0.05) 8px, rgba(255,255,255,0.05) 16px);
   }
-
-  .tier-column:nth-child(1) .tier-header { background: var(--ensino); }
-  .tier-column:nth-child(2) .tier-header { background: var(--pesquisa); }
-  .tier-column:nth-child(3) .tier-header { background: var(--extensao); }
+  .tier-column[data-tier="ensino"] .tier-header { background: var(--ensino); }
+  .tier-column[data-tier="pesquisa"] .tier-header { background: var(--pesquisa); }
+  .tier-column[data-tier="extensao"] .tier-header { background: var(--extensao); }
 
   .tier-header h3 {
     font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-size: 1.35rem;
-    letter-spacing: 0.03em;
+    font-weight: 900; font-size: 1.2rem;
     position: relative;
   }
-
-  .tier-header .icon {
-    font-size: 1.5rem;
-    margin-bottom: 0.2rem;
-    display: block;
+  .tier-header .icon { font-size: 1.3rem; margin-bottom: 0.1rem; display: block; }
+  .tier-header .count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem; font-weight: 500;
+    opacity: 0.7; margin-top: 0.15rem; position: relative;
   }
 
   .tier-body {
-    flex: 1;
-    padding: 1rem;
-    display: flex;
-    flex-wrap: wrap;
+    flex: 1; padding: 0.85rem;
+    display: flex; flex-wrap: wrap;
     align-content: flex-start;
-    gap: 0.75rem;
-    min-height: 300px;
+    gap: 0.65rem;
+    min-height: 240px;
+  }
+  .tier-body:empty::after {
+    content: 'Arraste itens aqui';
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 100%; min-height: 170px;
+    color: rgba(255,255,255,0.1);
+    font-size: 0.82rem; font-style: italic;
+    border: 2px dashed rgba(255,255,255,0.06);
+    border-radius: 12px;
   }
 
-  /* ── Post-it Notes ── */
+  /* ══════════════════════════════════════
+     POST-IT & IMAGE
+     ══════════════════════════════════════ */
   .postit {
     position: relative;
-    width: 120px;
-    min-height: 100px;
-    padding: 0.7rem 0.6rem 1.6rem;
-    border-radius: 2px 2px 2px 2px;
+    width: 118px; min-height: 94px;
+    padding: 0.6rem 0.5rem 1.4rem;
+    border-radius: 2px;
     cursor: grab;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     text-align: center;
-    box-shadow:
-      2px 3px 8px rgba(0,0,0,0.25),
-      inset 0 -2px 6px rgba(0,0,0,0.06);
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.25), inset 0 -2px 6px rgba(0,0,0,0.06);
     transform: rotate(var(--rotation, 0deg));
     transition: transform 0.2s, box-shadow 0.2s;
-    animation: postitDrop 0.35s ease-out;
-    user-select: none;
+    animation: itemDrop 0.3s ease-out;
+    user-select: none; flex-shrink: 0;
   }
-
   .postit:hover {
     transform: rotate(0deg) scale(1.08);
     box-shadow: 4px 6px 20px rgba(0,0,0,0.35);
     z-index: 10;
   }
-
   .postit:active { cursor: grabbing; }
-
-  /* Tape effect on top */
   .postit::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 14px;
+    content: ''; position: absolute;
+    top: -6px; left: 50%; transform: translateX(-50%);
+    width: 36px; height: 12px;
     background: rgba(255,255,255,0.35);
     border-radius: 1px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
-
   .postit-text {
     font-family: 'Caveat', cursive;
-    font-weight: 700;
-    font-size: 1.1rem;
-    line-height: 1.2;
+    font-weight: 700; font-size: 1.05rem; line-height: 1.2;
     color: #2d2d2d;
-    word-break: break-word;
-    hyphens: auto;
+    word-break: break-word; hyphens: auto;
   }
 
-  .postit .delete-btn {
+  .delete-btn {
     position: absolute;
-    bottom: 4px;
-    right: 4px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: none;
+    width: 19px; height: 19px;
+    border-radius: 50%; border: none;
     background: rgba(0,0,0,0.15);
     color: rgba(0,0,0,0.4);
-    font-size: 0.7rem;
+    font-size: 0.62rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s;
   }
-  .postit:hover .delete-btn { opacity: 1; }
-  .postit .delete-btn:hover {
-    background: rgba(200,0,0,0.3);
-    color: rgba(180,0,0,0.8);
-  }
+  .postit .delete-btn { bottom: 3px; right: 3px; }
+  .postit:hover .delete-btn, .tier-image:hover .delete-btn { opacity: 1; }
+  .delete-btn:hover { background: rgba(200,0,0,0.3) !important; color: rgba(180,0,0,0.8) !important; }
 
-  /* ── Image items ── */
   .tier-image {
     position: relative;
-    width: 110px;
-    height: 110px;
-    border-radius: 10px;
-    overflow: hidden;
+    width: 102px; height: 102px;
+    border-radius: 10px; overflow: hidden;
     cursor: grab;
     box-shadow: 0 3px 12px rgba(0,0,0,0.35);
     transition: transform 0.2s, box-shadow 0.2s;
-    animation: postitDrop 0.35s ease-out;
-    user-select: none;
-    flex-shrink: 0;
+    animation: itemDrop 0.3s ease-out;
+    user-select: none; flex-shrink: 0;
   }
-
-  .tier-image:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
-    z-index: 10;
-  }
-
+  .tier-image:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(0,0,0,0.5); z-index: 10; }
   .tier-image:active { cursor: grabbing; }
+  .tier-image img { width: 100%; height: 100%; object-fit: cover; }
+  .tier-image .delete-btn { top: 3px; right: 3px; background: rgba(0,0,0,0.55); color: #fff; }
 
-  .tier-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  .dragging { opacity: 0.3; }
 
-  .tier-image .delete-btn {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    font-size: 0.7rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .tier-image:hover .delete-btn { opacity: 1; }
-  .tier-image .delete-btn:hover { background: rgba(200,0,0,0.7); }
-
-  /* ── Drag ghost ── */
-  .dragging { opacity: 0.4; }
-
-  /* ── Empty state ── */
-  .tier-body:empty::after {
-    content: 'Arraste itens aqui';
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    min-height: 200px;
-    color: rgba(255,255,255,0.12);
-    font-size: 0.9rem;
-    font-style: italic;
-    border: 2px dashed rgba(255,255,255,0.07);
-    border-radius: 12px;
-  }
-
-  /* ── Animations ── */
-  @keyframes postitDrop {
-    0% { opacity: 0; transform: rotate(var(--rotation, 0deg)) translateY(-20px) scale(0.8); }
+  @keyframes itemDrop {
+    0% { opacity: 0; transform: rotate(var(--rotation, 0deg)) translateY(-14px) scale(0.85); }
     100% { opacity: 1; transform: rotate(var(--rotation, 0deg)) translateY(0) scale(1); }
   }
 
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
 
-  /* ── Footer ── */
   .footer {
-    text-align: center;
-    padding: 1rem;
-    color: var(--text-muted);
-    font-size: 0.75rem;
-    opacity: 0.5;
-    position: relative;
-    z-index: 1;
-    transition: opacity 0.2s;
-  }
-  .footer:hover { opacity: 0.8; }
-
-  .btn-clear {
-    margin-top: 0.6rem;
-    padding: 0.4rem 1rem;
-    border: 1px solid rgba(233,69,96,0.3);
-    background: transparent;
-    color: var(--ensino-light);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-clear:hover {
-    background: rgba(233,69,96,0.15);
-    border-color: var(--ensino-light);
+    text-align: center; padding: 1.3rem 1rem 1rem;
+    color: var(--text-muted); font-size: 0.7rem; opacity: 0.4;
+    position: relative; z-index: 1;
   }
 </style>
 </head>
@@ -521,127 +389,110 @@
 
 <header>
   <h1>Tier List Acadêmica</h1>
-  <p>Organize atividades entre Ensino, Pesquisa e Extensão</p>
+  <p>Prepare os itens no banco e, durante a aula, arraste-os para as categorias com a turma</p>
 </header>
 
-<!-- Controls -->
-<div class="controls">
-  <div class="tab-row">
-    <button class="tab-btn active" data-tab="postit-tab">📝 Criar Post-it</button>
-    <button class="tab-btn" data-tab="image-tab">🖼️ Adicionar Imagem</button>
-  </div>
+<div class="main-layout">
 
-  <!-- Post-it Tab -->
-  <div id="postit-tab" class="tab-panel active">
-    <div class="postit-form">
-      <div class="field" style="flex:1; min-width:180px;">
-        <label for="postit-input">Texto do Post-it</label>
-        <input type="text" id="postit-input" maxlength="25" placeholder="Ex: Aula de Cálculo">
-        <div class="char-count"><span id="char-current">0</span>/25</div>
+  <!-- ══════════ STAGING AREA ══════════ -->
+  <section class="staging-section">
+    <div class="staging-top">
+      <h2>🎒 Banco de Itens <span class="badge" id="staging-count">0 itens</span></h2>
+      <div class="staging-btns">
+        <button class="btn-ghost" id="collapse-btn" title="Recolher formulário">▲ Recolher</button>
+        <button class="btn-ghost btn-danger" id="clear-all-btn">🗑 Limpar tudo</button>
       </div>
-      <div class="field">
-        <label>Cor</label>
-        <div class="color-picker-row" id="color-picker">
-          <div class="color-swatch selected" data-color="#ffe066" style="background:#ffe066;" title="Amarelo"></div>
-          <div class="color-swatch" data-color="#a8e6cf" style="background:#a8e6cf;" title="Verde"></div>
-          <div class="color-swatch" data-color="#ffaaa5" style="background:#ffaaa5;" title="Rosa"></div>
-          <div class="color-swatch" data-color="#a0d2db" style="background:#a0d2db;" title="Azul"></div>
-          <div class="color-swatch" data-color="#ffcc80" style="background:#ffcc80;" title="Laranja"></div>
-          <div class="color-swatch" data-color="#d5aaff" style="background:#d5aaff;" title="Lilás"></div>
+    </div>
+
+    <div id="creation-area">
+      <div class="creation-bar">
+        <div class="field" style="flex:1; min-width:155px;">
+          <label for="postit-input">📝 Texto do Post-it</label>
+          <input type="text" id="postit-input" maxlength="25" placeholder="Ex: Aula de Cálculo">
+          <div class="char-count"><span id="char-current">0</span>/25</div>
         </div>
+        <div class="field">
+          <label>Cor</label>
+          <div class="color-picker-row" id="color-picker">
+            <div class="color-swatch selected" data-color="#ffe066" style="background:#ffe066;" title="Amarelo"></div>
+            <div class="color-swatch" data-color="#a8e6cf" style="background:#a8e6cf;" title="Verde"></div>
+            <div class="color-swatch" data-color="#ffaaa5" style="background:#ffaaa5;" title="Rosa"></div>
+            <div class="color-swatch" data-color="#a0d2db" style="background:#a0d2db;" title="Azul"></div>
+            <div class="color-swatch" data-color="#ffcc80" style="background:#ffcc80;" title="Laranja"></div>
+            <div class="color-swatch" data-color="#d5aaff" style="background:#d5aaff;" title="Lilás"></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="add-postit-btn">+ Post-it</button>
+        <div class="divider"></div>
+        <div class="field">
+          <label>🖼️ Imagem</label>
+          <label class="file-label">
+            📎 Arquivo
+            <input type="file" id="img-input" accept="image/*">
+          </label>
+          <span class="file-name" id="file-name-display">Nenhum arquivo</span>
+        </div>
+        <button class="btn btn-primary" id="add-img-btn">+ Imagem</button>
       </div>
-      <div class="field">
-        <label>Destino</label>
-        <select id="postit-target">
-          <option value="ensino">Ensino</option>
-          <option value="pesquisa">Pesquisa</option>
-          <option value="extensao">Extensão</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" id="add-postit-btn">Adicionar</button>
     </div>
-  </div>
 
-  <!-- Image Tab -->
-  <div id="image-tab" class="tab-panel">
-    <div class="img-form">
-      <div class="field">
-        <label>Imagem</label>
-        <label class="file-label">
-          📎 Escolher arquivo
-          <input type="file" id="img-input" accept="image/*">
-        </label>
-        <span class="file-name" id="file-name-display">Nenhum arquivo</span>
+    <div class="staging-body" id="staging-pool"></div>
+  </section>
+
+  <!-- ══════════ TIER COLUMNS ══════════ -->
+  <div class="tier-container">
+    <div class="tier-column" data-tier="ensino">
+      <div class="tier-header">
+        <span class="icon">📚</span>
+        <h3>Ensino</h3>
+        <div class="count" id="count-ensino">0 itens</div>
       </div>
-      <div class="field">
-        <label>Destino</label>
-        <select id="img-target">
-          <option value="ensino">Ensino</option>
-          <option value="pesquisa">Pesquisa</option>
-          <option value="extensao">Extensão</option>
-        </select>
+      <div class="tier-body drop-zone" id="tier-ensino"></div>
+    </div>
+    <div class="tier-column" data-tier="pesquisa">
+      <div class="tier-header">
+        <span class="icon">🔬</span>
+        <h3>Pesquisa</h3>
+        <div class="count" id="count-pesquisa">0 itens</div>
       </div>
-      <button class="btn btn-primary" id="add-img-btn">Adicionar</button>
+      <div class="tier-body drop-zone" id="tier-pesquisa"></div>
+    </div>
+    <div class="tier-column" data-tier="extensao">
+      <div class="tier-header">
+        <span class="icon">🤝</span>
+        <h3>Extensão</h3>
+        <div class="count" id="count-extensao">0 itens</div>
+      </div>
+      <div class="tier-body drop-zone" id="tier-extensao"></div>
     </div>
   </div>
 </div>
 
-<!-- Tier Columns -->
-<div class="tier-container">
-  <div class="tier-column" data-tier="ensino">
-    <div class="tier-header">
-      <span class="icon">📚</span>
-      <h3>Ensino</h3>
-    </div>
-    <div class="tier-body" id="tier-ensino"></div>
-  </div>
-
-  <div class="tier-column" data-tier="pesquisa">
-    <div class="tier-header">
-      <span class="icon">🔬</span>
-      <h3>Pesquisa</h3>
-    </div>
-    <div class="tier-body" id="tier-pesquisa"></div>
-  </div>
-
-  <div class="tier-column" data-tier="extensao">
-    <div class="tier-header">
-      <span class="icon">🤝</span>
-      <h3>Extensão</h3>
-    </div>
-    <div class="tier-body" id="tier-extensao"></div>
-  </div>
-</div>
-
-<div class="footer">
-  Arraste os itens entre as colunas para reorganizar · Dados salvos automaticamente
-  <br>
-  <button class="btn-clear" id="clear-all-btn">🗑️ Limpar tudo</button>
-</div>
+<div class="footer">Arraste itens do banco para as categorias · Itens podem voltar ao banco · Dados salvos automaticamente</div>
 
 <script>
 (() => {
-  const STORAGE_KEY = 'tierlist-academica-data';
+  const STORAGE_KEY = 'tierlist-academica-v2';
+  const ALL_ZONES = ['staging-pool', 'tier-ensino', 'tier-pesquisa', 'tier-extensao'];
 
-  // ── Tabs ──
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabBtns.forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-    });
+  // ── Collapse ──
+  const creationArea = document.getElementById('creation-area');
+  const collapseBtn = document.getElementById('collapse-btn');
+  let collapsed = false;
+  collapseBtn.addEventListener('click', () => {
+    collapsed = !collapsed;
+    creationArea.style.display = collapsed ? 'none' : '';
+    collapseBtn.textContent = collapsed ? '▼ Expandir' : '▲ Recolher';
   });
 
   // ── Color Picker ──
   let selectedColor = '#ffe066';
   document.getElementById('color-picker').addEventListener('click', e => {
-    const swatch = e.target.closest('.color-swatch');
-    if (!swatch) return;
+    const sw = e.target.closest('.color-swatch');
+    if (!sw) return;
     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-    swatch.classList.add('selected');
-    selectedColor = swatch.dataset.color;
+    sw.classList.add('selected');
+    selectedColor = sw.dataset.color;
   });
 
   // ── Char Counter ──
@@ -653,44 +504,40 @@
     charCurrent.parentElement.classList.toggle('warn', len >= 22);
   });
 
-  // ── Random slight rotation ──
-  function randomRotation() {
-    return (Math.random() - 0.5) * 6;
+  function randomRotation() { return (Math.random() - 0.5) * 6; }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
   }
 
-  // ══════════════════════════════════════════
-  // ── localStorage: Save / Load ──
-  // ══════════════════════════════════════════
+  function updateCounts() {
+    const sc = document.getElementById('staging-pool').children.length;
+    document.getElementById('staging-count').textContent = sc + (sc === 1 ? ' item' : ' itens');
+    ['ensino', 'pesquisa', 'extensao'].forEach(id => {
+      const n = document.getElementById('tier-' + id).children.length;
+      document.getElementById('count-' + id).textContent = n + (n === 1 ? ' item' : ' itens');
+    });
+  }
 
+  // ═══ localStorage ═══
   function saveState() {
-    const tiers = ['ensino', 'pesquisa', 'extensao'];
     const data = {};
-    tiers.forEach(tierId => {
-      const zone = document.getElementById('tier-' + tierId);
+    ALL_ZONES.forEach(zid => {
+      const zone = document.getElementById(zid);
       const items = [];
       zone.querySelectorAll('.postit, .tier-image').forEach(el => {
         if (el.classList.contains('postit')) {
-          items.push({
-            type: 'postit',
-            text: el.querySelector('.postit-text').textContent,
-            color: el.style.background,
-            rotation: el.style.getPropertyValue('--rotation')
-          });
+          items.push({ type: 'postit', text: el.querySelector('.postit-text').textContent, color: el.style.background, rotation: el.style.getPropertyValue('--rotation') });
         } else if (el.classList.contains('tier-image')) {
-          items.push({
-            type: 'image',
-            src: el.querySelector('img').src
-          });
+          items.push({ type: 'image', src: el.querySelector('img').src });
         }
       });
-      data[tierId] = items;
+      data[zid] = items;
     });
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      showSaveIndicator();
-    } catch (e) {
-      console.warn('Não foi possível salvar no localStorage:', e);
-    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); showToast('✓ Salvo'); }
+    catch (e) { console.warn('Save error:', e); }
   }
 
   function loadState() {
@@ -698,140 +545,93 @@
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const data = JSON.parse(raw);
-      const tiers = ['ensino', 'pesquisa', 'extensao'];
-      tiers.forEach(tierId => {
-        const items = data[tierId];
+      ALL_ZONES.forEach(zid => {
+        const items = data[zid];
         if (!Array.isArray(items)) return;
         items.forEach(item => {
-          if (item.type === 'postit') {
-            createPostit(item.text, item.color, tierId, item.rotation, false);
-          } else if (item.type === 'image') {
-            createImageItem(item.src, tierId, false);
-          }
+          if (item.type === 'postit') addPostitToZone(item.text, item.color, zid, item.rotation, false);
+          else if (item.type === 'image') addImageToZone(item.src, zid, false);
         });
       });
-    } catch (e) {
-      console.warn('Erro ao carregar dados salvos:', e);
-    }
+      updateCounts();
+    } catch (e) { console.warn('Load error:', e); }
   }
 
-  function clearState() {
-    if (!confirm('Tem certeza que deseja limpar todos os itens e os dados salvos?')) return;
+  function clearAll() {
+    if (!confirm('Limpar todos os itens do banco e das categorias?')) return;
     localStorage.removeItem(STORAGE_KEY);
-    ['ensino', 'pesquisa', 'extensao'].forEach(id => {
-      document.getElementById('tier-' + id).innerHTML = '';
-    });
+    ALL_ZONES.forEach(id => { document.getElementById(id).innerHTML = ''; });
+    updateCounts();
   }
 
-  // Save indicator toast
-  function showSaveIndicator() {
-    let toast = document.getElementById('save-toast');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'save-toast';
-      toast.style.cssText = `
-        position: fixed; bottom: 1.5rem; right: 1.5rem;
-        background: rgba(22,33,62,0.92); color: #a8e6cf;
-        padding: 0.55rem 1.1rem; border-radius: 10px;
-        font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
-        font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        border: 1px solid rgba(168,230,207,0.2);
-        z-index: 9999; opacity: 0; transition: opacity 0.3s;
-        pointer-events: none;
-      `;
-      document.body.appendChild(toast);
+  function showToast(msg) {
+    let t = document.getElementById('save-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'save-toast';
+      t.style.cssText = 'position:fixed;bottom:1.2rem;right:1.2rem;background:rgba(22,33,62,0.92);color:#a8e6cf;padding:0.42rem 0.95rem;border-radius:9px;font-family:"DM Sans",sans-serif;font-size:0.76rem;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,0.4);border:1px solid rgba(168,230,207,0.2);z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;';
+      document.body.appendChild(t);
     }
-    toast.textContent = '✓ Salvo automaticamente';
-    toast.style.opacity = '1';
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 1600);
+    t.textContent = msg;
+    t.style.opacity = '1';
+    clearTimeout(t._t);
+    t._t = setTimeout(() => { t.style.opacity = '0'; }, 1400);
   }
 
-  // ── Create Post-it ──
-  function createPostit(text, color, targetId, rotation, shouldSave = true) {
+  // ═══ Create Items ═══
+  function addPostitToZone(text, color, zoneId, rotation, shouldSave = true) {
     if (!text.trim()) return;
-    const tier = document.getElementById('tier-' + targetId);
+    const zone = document.getElementById(zoneId);
     const note = document.createElement('div');
     note.className = 'postit';
     note.draggable = true;
     note.style.background = color;
     note.style.setProperty('--rotation', rotation || (randomRotation() + 'deg'));
-
-    note.innerHTML = `
-      <span class="postit-text">${escapeHtml(text)}</span>
-      <button class="delete-btn" title="Remover">✕</button>
-    `;
-
-    note.querySelector('.delete-btn').addEventListener('click', e => {
-      e.stopPropagation();
-      note.remove();
-      saveState();
-    });
-
+    note.innerHTML = `<span class="postit-text">${escapeHtml(text)}</span><button class="delete-btn" title="Remover">✕</button>`;
+    note.querySelector('.delete-btn').addEventListener('click', e => { e.stopPropagation(); note.remove(); updateCounts(); saveState(); });
     addDragEvents(note);
-    tier.appendChild(note);
-    if (shouldSave) saveState();
+    zone.appendChild(note);
+    if (shouldSave) { updateCounts(); saveState(); }
   }
 
+  function addImageToZone(src, zoneId, shouldSave = true) {
+    const zone = document.getElementById(zoneId);
+    const item = document.createElement('div');
+    item.className = 'tier-image';
+    item.draggable = true;
+    item.innerHTML = `<img src="${src}" alt="Item"><button class="delete-btn" title="Remover">✕</button>`;
+    item.querySelector('.delete-btn').addEventListener('click', e => { e.stopPropagation(); item.remove(); updateCounts(); saveState(); });
+    addDragEvents(item);
+    zone.appendChild(item);
+    if (shouldSave) { updateCounts(); saveState(); }
+  }
+
+  // ── Buttons → staging pool ──
   document.getElementById('add-postit-btn').addEventListener('click', () => {
     const text = postitInput.value.trim();
-    const target = document.getElementById('postit-target').value;
     if (!text) { postitInput.focus(); return; }
-    createPostit(text, selectedColor, target);
+    addPostitToZone(text, selectedColor, 'staging-pool');
     postitInput.value = '';
     charCurrent.textContent = '0';
     charCurrent.parentElement.classList.remove('warn');
     postitInput.focus();
   });
+  postitInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('add-postit-btn').click(); });
 
-  postitInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('add-postit-btn').click();
-  });
-
-  // ── Image Upload ──
   const imgInput = document.getElementById('img-input');
   const fileNameDisplay = document.getElementById('file-name-display');
-
-  imgInput.addEventListener('change', () => {
-    fileNameDisplay.textContent = imgInput.files[0]?.name || 'Nenhum arquivo';
-  });
-
+  imgInput.addEventListener('change', () => { fileNameDisplay.textContent = imgInput.files[0]?.name || 'Nenhum arquivo'; });
   document.getElementById('add-img-btn').addEventListener('click', () => {
     const file = imgInput.files[0];
     if (!file) return;
-    const target = document.getElementById('img-target').value;
     const reader = new FileReader();
-    reader.onload = e => {
-      createImageItem(e.target.result, target);
-      imgInput.value = '';
-      fileNameDisplay.textContent = 'Nenhum arquivo';
-    };
+    reader.onload = e => { addImageToZone(e.target.result, 'staging-pool'); imgInput.value = ''; fileNameDisplay.textContent = 'Nenhum arquivo'; };
     reader.readAsDataURL(file);
   });
 
-  function createImageItem(src, targetId, shouldSave = true) {
-    const tier = document.getElementById('tier-' + targetId);
-    const item = document.createElement('div');
-    item.className = 'tier-image';
-    item.draggable = true;
+  document.getElementById('clear-all-btn').addEventListener('click', clearAll);
 
-    item.innerHTML = `
-      <img src="${src}" alt="Item">
-      <button class="delete-btn" title="Remover">✕</button>
-    `;
-
-    item.querySelector('.delete-btn').addEventListener('click', e => {
-      e.stopPropagation();
-      item.remove();
-      saveState();
-    });
-
-    addDragEvents(item);
-    tier.appendChild(item);
-    if (shouldSave) saveState();
-  }
-
-  // ── Drag & Drop ──
+  // ═══ Drag & Drop ═══
   let draggedEl = null;
 
   function addDragEvents(el) {
@@ -844,66 +644,60 @@
     el.addEventListener('dragend', () => {
       el.classList.remove('dragging');
       draggedEl = null;
-      document.querySelectorAll('.tier-column').forEach(c => c.classList.remove('drag-over'));
+      document.querySelectorAll('.tier-column, .staging-section, .staging-body').forEach(c => c.classList.remove('drag-over'));
     });
   }
 
-  // Drop zones
-  document.querySelectorAll('.tier-body').forEach(zone => {
+  ALL_ZONES.forEach(zoneId => {
+    const zone = document.getElementById(zoneId);
+
     zone.addEventListener('dragover', e => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-      zone.closest('.tier-column').classList.add('drag-over');
+      const wrap = zone.closest('.tier-column') || zone.closest('.staging-section');
+      if (wrap) wrap.classList.add('drag-over');
+      zone.classList.add('drag-over');
     });
 
     zone.addEventListener('dragleave', e => {
       if (!zone.contains(e.relatedTarget)) {
-        zone.closest('.tier-column').classList.remove('drag-over');
+        const wrap = zone.closest('.tier-column') || zone.closest('.staging-section');
+        if (wrap) wrap.classList.remove('drag-over');
+        zone.classList.remove('drag-over');
       }
     });
 
     zone.addEventListener('drop', e => {
       e.preventDefault();
-      zone.closest('.tier-column').classList.remove('drag-over');
-      if (draggedEl && zone !== draggedEl.parentElement) {
+      const wrap = zone.closest('.tier-column') || zone.closest('.staging-section');
+      if (wrap) wrap.classList.remove('drag-over');
+      zone.classList.remove('drag-over');
+      if (!draggedEl) return;
+
+      if (zone !== draggedEl.parentElement) {
         zone.appendChild(draggedEl);
-        saveState();
-      } else if (draggedEl) {
-        const afterEl = getDragAfterElement(zone, e.clientY);
-        if (afterEl) {
-          zone.insertBefore(draggedEl, afterEl);
-        } else {
-          zone.appendChild(draggedEl);
-        }
-        saveState();
+      } else {
+        const after = getDragAfter(zone, e.clientY);
+        if (after) zone.insertBefore(draggedEl, after);
+        else zone.appendChild(draggedEl);
       }
+      updateCounts();
+      saveState();
     });
   });
 
-  function getDragAfterElement(container, y) {
-    const draggables = [...container.querySelectorAll('.postit:not(.dragging), .tier-image:not(.dragging)')];
-    let closest = { offset: Number.POSITIVE_INFINITY, element: null };
-    draggables.forEach(child => {
+  function getDragAfter(container, y) {
+    const els = [...container.querySelectorAll('.postit:not(.dragging), .tier-image:not(.dragging)')];
+    let closest = { off: Infinity, el: null };
+    els.forEach(child => {
       const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
-      if (offset < 0 && offset > -closest.offset) {
-        closest = { offset: -offset, element: child };
-      }
+      const off = y - box.top - box.height / 2;
+      if (off < 0 && -off < closest.off) closest = { off: -off, el: child };
     });
-    return closest.element;
+    return closest.el;
   }
 
-  // ── Escape HTML ──
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  // ── Clear button ──
-  document.getElementById('clear-all-btn').addEventListener('click', clearState);
-
-  // ── Load saved state on startup ──
+  // ── Init ──
   loadState();
 })();
 </script>
