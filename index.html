@@ -495,6 +495,25 @@
     opacity: 0.5;
     position: relative;
     z-index: 1;
+    transition: opacity 0.2s;
+  }
+  .footer:hover { opacity: 0.8; }
+
+  .btn-clear {
+    margin-top: 0.6rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(233,69,96,0.3);
+    background: transparent;
+    color: var(--ensino-light);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover {
+    background: rgba(233,69,96,0.15);
+    border-color: var(--ensino-light);
   }
 </style>
 </head>
@@ -594,10 +613,16 @@
   </div>
 </div>
 
-<div class="footer">Arraste os itens entre as colunas para reorganizar</div>
+<div class="footer">
+  Arraste os itens entre as colunas para reorganizar · Dados salvos automaticamente
+  <br>
+  <button class="btn-clear" id="clear-all-btn">🗑️ Limpar tudo</button>
+</div>
 
 <script>
 (() => {
+  const STORAGE_KEY = 'tierlist-academica-data';
+
   // ── Tabs ──
   const tabBtns = document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn => {
@@ -630,18 +655,107 @@
 
   // ── Random slight rotation ──
   function randomRotation() {
-    return (Math.random() - 0.5) * 6; // -3 to +3 degrees
+    return (Math.random() - 0.5) * 6;
+  }
+
+  // ══════════════════════════════════════════
+  // ── localStorage: Save / Load ──
+  // ══════════════════════════════════════════
+
+  function saveState() {
+    const tiers = ['ensino', 'pesquisa', 'extensao'];
+    const data = {};
+    tiers.forEach(tierId => {
+      const zone = document.getElementById('tier-' + tierId);
+      const items = [];
+      zone.querySelectorAll('.postit, .tier-image').forEach(el => {
+        if (el.classList.contains('postit')) {
+          items.push({
+            type: 'postit',
+            text: el.querySelector('.postit-text').textContent,
+            color: el.style.background,
+            rotation: el.style.getPropertyValue('--rotation')
+          });
+        } else if (el.classList.contains('tier-image')) {
+          items.push({
+            type: 'image',
+            src: el.querySelector('img').src
+          });
+        }
+      });
+      data[tierId] = items;
+    });
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      showSaveIndicator();
+    } catch (e) {
+      console.warn('Não foi possível salvar no localStorage:', e);
+    }
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      const tiers = ['ensino', 'pesquisa', 'extensao'];
+      tiers.forEach(tierId => {
+        const items = data[tierId];
+        if (!Array.isArray(items)) return;
+        items.forEach(item => {
+          if (item.type === 'postit') {
+            createPostit(item.text, item.color, tierId, item.rotation, false);
+          } else if (item.type === 'image') {
+            createImageItem(item.src, tierId, false);
+          }
+        });
+      });
+    } catch (e) {
+      console.warn('Erro ao carregar dados salvos:', e);
+    }
+  }
+
+  function clearState() {
+    if (!confirm('Tem certeza que deseja limpar todos os itens e os dados salvos?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    ['ensino', 'pesquisa', 'extensao'].forEach(id => {
+      document.getElementById('tier-' + id).innerHTML = '';
+    });
+  }
+
+  // Save indicator toast
+  function showSaveIndicator() {
+    let toast = document.getElementById('save-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'save-toast';
+      toast.style.cssText = `
+        position: fixed; bottom: 1.5rem; right: 1.5rem;
+        background: rgba(22,33,62,0.92); color: #a8e6cf;
+        padding: 0.55rem 1.1rem; border-radius: 10px;
+        font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+        font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        border: 1px solid rgba(168,230,207,0.2);
+        z-index: 9999; opacity: 0; transition: opacity 0.3s;
+        pointer-events: none;
+      `;
+      document.body.appendChild(toast);
+    }
+    toast.textContent = '✓ Salvo automaticamente';
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 1600);
   }
 
   // ── Create Post-it ──
-  function createPostit(text, color, targetId) {
+  function createPostit(text, color, targetId, rotation, shouldSave = true) {
     if (!text.trim()) return;
     const tier = document.getElementById('tier-' + targetId);
     const note = document.createElement('div');
     note.className = 'postit';
     note.draggable = true;
     note.style.background = color;
-    note.style.setProperty('--rotation', randomRotation() + 'deg');
+    note.style.setProperty('--rotation', rotation || (randomRotation() + 'deg'));
 
     note.innerHTML = `
       <span class="postit-text">${escapeHtml(text)}</span>
@@ -651,10 +765,12 @@
     note.querySelector('.delete-btn').addEventListener('click', e => {
       e.stopPropagation();
       note.remove();
+      saveState();
     });
 
     addDragEvents(note);
     tier.appendChild(note);
+    if (shouldSave) saveState();
   }
 
   document.getElementById('add-postit-btn').addEventListener('click', () => {
@@ -693,7 +809,7 @@
     reader.readAsDataURL(file);
   });
 
-  function createImageItem(src, targetId) {
+  function createImageItem(src, targetId, shouldSave = true) {
     const tier = document.getElementById('tier-' + targetId);
     const item = document.createElement('div');
     item.className = 'tier-image';
@@ -707,10 +823,12 @@
     item.querySelector('.delete-btn').addEventListener('click', e => {
       e.stopPropagation();
       item.remove();
+      saveState();
     });
 
     addDragEvents(item);
     tier.appendChild(item);
+    if (shouldSave) saveState();
   }
 
   // ── Drag & Drop ──
@@ -721,7 +839,6 @@
       draggedEl = el;
       el.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
-      // Needed for Firefox
       e.dataTransfer.setData('text/plain', '');
     });
     el.addEventListener('dragend', () => {
@@ -740,7 +857,6 @@
     });
 
     zone.addEventListener('dragleave', e => {
-      // Only remove if actually leaving the column
       if (!zone.contains(e.relatedTarget)) {
         zone.closest('.tier-column').classList.remove('drag-over');
       }
@@ -751,14 +867,15 @@
       zone.closest('.tier-column').classList.remove('drag-over');
       if (draggedEl && zone !== draggedEl.parentElement) {
         zone.appendChild(draggedEl);
+        saveState();
       } else if (draggedEl) {
-        // Reorder within same zone
         const afterEl = getDragAfterElement(zone, e.clientY);
         if (afterEl) {
           zone.insertBefore(draggedEl, afterEl);
         } else {
           zone.appendChild(draggedEl);
         }
+        saveState();
       }
     });
   });
@@ -782,6 +899,12 @@
     div.textContent = str;
     return div.innerHTML;
   }
+
+  // ── Clear button ──
+  document.getElementById('clear-all-btn').addEventListener('click', clearState);
+
+  // ── Load saved state on startup ──
+  loadState();
 })();
 </script>
 </body>
