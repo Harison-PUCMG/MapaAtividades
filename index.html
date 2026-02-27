@@ -205,6 +205,8 @@
     cursor: pointer; transition: all 0.2s;
   }
   .btn-ghost:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .btn-ghost.import-label { cursor: pointer; }
+  .btn-ghost.import-label:hover { background: rgba(255,255,255,0.06); color: #fff; }
   .btn-danger { border-color: rgba(233,69,96,0.25); color: var(--ensino-light); }
   .btn-danger:hover { background: rgba(233,69,96,0.12); }
 
@@ -400,6 +402,11 @@
       <h2>🎒 Banco de Itens <span class="badge" id="staging-count">0 itens</span></h2>
       <div class="staging-btns">
         <button class="btn-ghost" id="collapse-btn" title="Recolher formulário">▲ Recolher</button>
+        <button class="btn-ghost" id="export-btn" title="Exportar estado">📤 Exportar</button>
+        <label class="btn-ghost import-label" id="import-label" title="Importar estado">
+          📥 Importar
+          <input type="file" id="import-input" accept=".json" style="display:none">
+        </label>
         <button class="btn-ghost btn-danger" id="clear-all-btn">🗑 Limpar tudo</button>
       </div>
     </div>
@@ -630,6 +637,77 @@
   });
 
   document.getElementById('clear-all-btn').addEventListener('click', clearAll);
+
+  // ═══ Export / Import ═══
+  function buildStateData() {
+    const data = {};
+    ALL_ZONES.forEach(zid => {
+      const zone = document.getElementById(zid);
+      const items = [];
+      zone.querySelectorAll('.postit, .tier-image').forEach(el => {
+        if (el.classList.contains('postit')) {
+          items.push({ type: 'postit', text: el.querySelector('.postit-text').textContent, color: el.style.background, rotation: el.style.getPropertyValue('--rotation') });
+        } else if (el.classList.contains('tier-image')) {
+          items.push({ type: 'image', src: el.querySelector('img').src });
+        }
+      });
+      data[zid] = items;
+    });
+    return data;
+  }
+
+  function exportState() {
+    const data = buildStateData();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const now = new Date();
+    const stamp = now.toISOString().slice(0,16).replace('T','_').replace(':','-');
+    a.href = url;
+    a.download = `tierlist_${stamp}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📤 Exportado com sucesso');
+  }
+
+  function importState(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        // Validate structure
+        const validKeys = ALL_ZONES;
+        const hasValid = validKeys.some(k => Array.isArray(data[k]));
+        if (!hasValid) { showToast('⚠️ Arquivo inválido'); return; }
+        if (!confirm('Importar substituirá o estado atual. Continuar?')) return;
+        ALL_ZONES.forEach(id => { document.getElementById(id).innerHTML = ''; });
+        ALL_ZONES.forEach(zid => {
+          const items = data[zid];
+          if (!Array.isArray(items)) return;
+          items.forEach(item => {
+            if (item.type === 'postit') addPostitToZone(item.text, item.color, zid, item.rotation, false);
+            else if (item.type === 'image') addImageToZone(item.src, zid, false);
+          });
+        });
+        updateCounts();
+        saveState();
+        showToast('📥 Importado com sucesso');
+      } catch (err) {
+        showToast('⚠️ Erro ao importar');
+        console.error('Import error:', err);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  document.getElementById('export-btn').addEventListener('click', exportState);
+
+  const importInput = document.getElementById('import-input');
+  importInput.addEventListener('change', () => {
+    importState(importInput.files[0]);
+    importInput.value = '';
+  });
 
   // ═══ Drag & Drop ═══
   let draggedEl = null;
